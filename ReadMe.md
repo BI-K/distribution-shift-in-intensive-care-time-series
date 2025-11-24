@@ -2,7 +2,7 @@
 
 
 ## Setup
-1. Install the required dependencies from requirements.txt via ```pip install -r requirements.txt```
+1. Install the required dependencies from requiremens.txt via ```pip install -r requirements.txt```
 
 ## Repository structure
 
