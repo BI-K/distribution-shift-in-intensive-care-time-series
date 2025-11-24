@@ -2,7 +2,7 @@
 
 
 ## Setup
-1. Install the required dependencies from requiremens.txt via ```pip intsall -r requirements.txt```
+1. Install the required dependencies from requirements.txt via ```pip install -r requirements.txt```
 
 ## Repository structure
 
@@ -50,7 +50,7 @@ The `./cohort_creation/data/records_with_start_endtime/xxx.csv` and `./cohort_cr
 
 Results of the experiments can be found in [.\distribution_shift\results\CNN_NO_ADAPT](.\distribution_shift\results\CNN_NO_ADAPT)
 
-All experiments have been conducted with `ALGORITHM2DOMAINAAAAAAAAAAAAAAAAAAAAAA`.
+All experiments have been conducted with `ALGORITHM2DOMAIN`.
 Please find the sweep-configuration in [./configs/no_adapt_cnn_experiment_configs/sweep_configs](./configs/no_adapt_cnn_experiment_configs/sweep_configs). The configurations of the best performing and selected models for each task can be found in the respective folders in [./configs/no_adapt_cnn_experiment_configs/](./configs/no_adapt_cnn_experiment_configs/).
 If you want to rerun the experiments, please copy those files to `.\configs` of [Algorihm2Domain_AdaTime](https://gitlab.com/BI_Koeln/Algorithm2Domain/-/tree/main/Evaluation_Framework/Algorithm2Domain_AdaTime/configs?ref_type=heads).
 
