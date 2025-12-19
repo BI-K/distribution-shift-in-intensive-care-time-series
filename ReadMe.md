@@ -1,4 +1,4 @@
-# Explorations on Distribution Shift for Hypotension and Hypoxemia Prediction on MIMIC III matched waveform v.1 
+# Explorations on Distribution Shift for Hypotension and Hypoxemia Prediction on MIMIC III matched waveform v1.0 
 
 
 ## Setup
@@ -37,11 +37,13 @@ A rougher visual outline of the cohort creation/filering steps is provided in [.
 
 #### Create the datasets based on the results of filtering
 
+The Datasets are created using [WavePrep](https://github.com/BI-K/WavePrep/tree/main)
+
 The created datasets will be provided upon reasonable request, they were not uploaded due to file-size restriction.
 
 The `./cohort_creation/data/records_with_start_endtime/xxx.csv` and `./cohort_creation/data/records_with_start_endtime/no_xxx.csv` are the input for our next step: the actual dataset creation step.
 
-1. Copy the folders `configs` and `inputs` from [.\configs\dataset_creation_configs](.\configs\dataset_creation_configs) to [Algorithm2Domain/Datasets/mimic-iii-matched-waveform-dataset-creation/configs](https://gitlab.com/BI_Koeln/Algorithm2Domain/-/tree/main/Datasets/mimic-iii-matched-waveform-dataset-creation/configs?ref_type=heads)
+1. Copy the folders `configs` and `inputs` from [.\configs\dataset_creation_configs](.\configs\dataset_creation_configs) to [WavePrep/configs/create](https://github.com/BI-K/WavePrep/tree/main/configs/create)
 2. The exact steps to create the datasets via the `mimic-iii-matched-waveform-dataset-creation` scripts are documented in the powershells in [.\configs\dataset_creation_powershell_scripts](.\configs\dataset_creation_powershell_scripts)
 3. The datasets were cleaned a final time using the [.\clean_data_final.ipynb](.\clean_data_final.ipynb) - all records containing at least one item outside of channel specific thresholds were removed.
 
