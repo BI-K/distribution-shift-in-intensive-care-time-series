@@ -27,8 +27,10 @@ def get_start_of_subsequent_ventilation_days(records):
 
 # load valid records
 valid_records = []
-with open('data/hinrichs_dataset/valid_records_hinrichs_base_model.json', 'r') as f:
-    valid_records = json.load(f)
+#with open('data/new_dataset/valid_records_spo2.json', 'r') as f:
+#    valid_records = json.load(f)
+with open('data/new_dataset/valid_records_hinrichs_base_model_abp.json', 'r') as f:
+    valid_records += json.load(f)
 
 valid_subjects = [s['subject'] for s in valid_records]
 valid_subjects = list(set(valid_subjects))
@@ -48,12 +50,12 @@ records_with_procedure_stay = mweh.get_records_with_procedure_during_stay(
 valid_records_without_ventilation = [record for record in valid_records if record not in records_with_procedure_stay]
 mweh.print_statistics_of_waveform_records(valid_records_without_ventilation, cur)
 
-with open('data/hinrichs_dataset/records_without_mechanical_ventilation_during_stay.txt', 'w') as f:
+with open('data/new_dataset/records_without_mechanical_ventilation_during_stay.txt', 'w') as f:
     for record in valid_records_without_ventilation:
         f.write(f"{record["record_id"]}\n")
 
-mweh.transtlate_txt_to_csv_with_start_and_end('./data/hinrichs_dataset/records_without_mechanical_ventilation_during_stay.txt', 
-                                             './data/hinrichs_dataset/records_with_start_endtime/no_ventilation_records.csv')
+mweh.transtlate_txt_to_csv_with_start_and_end('./data/new_dataset/records_without_mechanical_ventilation_during_stay.txt', 
+                                             './data/new_dataset/records_with_start_endtime/no_ventilation_records.csv')
 
 
 ####### get start and end times of ventilation consecutive days ##########
@@ -69,7 +71,7 @@ ventilation_df = pd.merge(ventilation_df_start, ventilation_df_end, on=['subject
 ventilation_df = ventilation_df.drop(columns=['cpt_cd_start', 'cpt_cd_end'])
 
 # read durations of recordings
-path_to_numerics_signal_duration = 'data\mimic3wdb-matched_numerics_signals_duration.csv'
+path_to_numerics_signal_duration = 'data\\mimic3wdb-matched_numerics_signals_duration.csv'
 numerics_signal_duration = pd.read_csv(path_to_numerics_signal_duration)
 
 # filter out all columns where record_id is not in ventilation_df + remove duplicated records - so keep the start + drop unneded columns
@@ -127,6 +129,7 @@ merged_df["offset_start_seconds"] = (
     - pd.to_datetime(merged_df["record_start_time"], format='%Y-%m-%d-%H-%M-%S')
 ).dt.total_seconds().clip(lower=0)
 
+
 merged_df = merged_df[merged_df["offset_start_seconds"] < merged_df["duration_seconds"]]
 
 # Calculate the element-wise maximum between chartdate_start and record_start_time
@@ -134,6 +137,7 @@ start_max = pd.concat([
     pd.to_datetime(merged_df["chartdate_start"], format='%Y-%m-%d-%H-%M-%S'),
     pd.to_datetime(merged_df["record_start_time"], format='%Y-%m-%d-%H-%M-%S')
 ], axis=1).max(axis=1)
+
 
 merged_df["offset_end_seconds"] = (
     pd.to_datetime(merged_df["chartdate_end"], format='%Y-%m-%d-%H-%M-%S') 
@@ -158,4 +162,4 @@ print("Total ventilation duration (days):", total_duration / (60 * 60 * 24))
 
 # save to csv
 merged_df = merged_df.drop(columns=["record_id","ventilation_duration_seconds", "chartdate_start", "chartdate_end", "record_start_time", "record_end_time", "subject_id", "hadm_id", "duration_seconds"])
-merged_df.to_csv('data/hinrichs_dataset/records_with_start_endtime/ventilation_records.csv', index=False)
+merged_df.to_csv('data/new_dataset/records_with_start_endtime/ventilation_records.csv', index=False)

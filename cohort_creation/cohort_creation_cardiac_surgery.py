@@ -10,8 +10,10 @@ import mimic_waveform_explore_helper as mweh
 
 # load valid records
 valid_records = []
-with open('data/hinrichs_dataset/valid_records_hinrichs_base_model.json', 'r') as f:
+with open('data/new_dataset/valid_records_hinrichs_base_model_abp.json', 'r') as f:
     valid_records = json.load(f)
+#with open('data/new_dataset/valid_records_spo2.json', 'r') as f:
+#    valid_records += json.load(f)
 
 valid_subjects = [s['subject'] for s in valid_records]
 valid_subjects = list(set(valid_subjects))
@@ -46,12 +48,12 @@ no_cardiac_surgery_records = [record for record in valid_records if record not i
 print("Statistics for records with absolutely no cardiac surgery")
 mweh.print_statistics_of_waveform_records(no_cardiac_surgery_records, cur)
 
-with open('data/hinrichs_dataset/records_absolutely_without_cardiac_surgery_during_stay.txt', 'w') as f:
+with open('data/new_dataset/records_absolutely_without_cardiac_surgery_during_stay.txt', 'w') as f:
     for record in no_cardiac_surgery_records:
         f.write(f"{record["record_id"]}\n")
 
-mweh.transtlate_txt_to_csv_with_start_and_end('./data/hinrichs_dataset/records_absolutely_without_cardiac_surgery_during_stay.txt',
-                                             './data/hinrichs_dataset/records_with_start_endtime/no_cardiac_surgery.csv')
+mweh.transtlate_txt_to_csv_with_start_and_end('./data/new_dataset/records_absolutely_without_cardiac_surgery_during_stay.txt',
+                                             './data/new_dataset/records_with_start_endtime/no_cardiac_surgery.csv')
 
 
 ###### get records with only one icustays and cardiac surgery ##############
@@ -64,7 +66,7 @@ icu_stay_counts_df = icu_stay_counts_df[icu_stay_counts_df['icu_stay_count'] == 
 
 
 all_records_cardiac_surgery = []
-with open('data/hinrichs_dataset/records_with_cardiac_surgery_cpt_and_icd9.txt', 'w') as f:
+with open('data/new_dataset/records_with_cardiac_surgery_cpt_and_icd9.txt', 'w') as f:
     for record_id in icu_stay_counts_df['record_id']:
         f.write(f"{record_id}\n")
         all_records_cardiac_surgery.append({
@@ -76,6 +78,5 @@ with open('data/hinrichs_dataset/records_with_cardiac_surgery_cpt_and_icd9.txt',
 print("Statistics for records with cardiac surgery based on CPT and ICD 9 Codes")
 mweh.print_statistics_of_waveform_records(all_records_cardiac_surgery, cur)
 
-mweh.transtlate_txt_to_csv_with_start_and_end('./data/hinrichs_dataset/records_with_cardiac_surgery_cpt_and_icd9.txt', 
-                                             './data/hinrichs_dataset/records_with_start_endtime/cardiac_surgery.csv')
-
+mweh.transtlate_txt_to_csv_with_start_and_end('./data/new_dataset/records_with_cardiac_surgery_cpt_and_icd9.txt', 
+                                             './data/new_dataset/records_with_start_endtime/cardiac_surgery.csv')

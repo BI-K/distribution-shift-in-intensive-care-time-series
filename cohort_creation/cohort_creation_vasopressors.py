@@ -84,7 +84,7 @@ def transform_csv_to_csv_with_start_and_end(df):
     # drop all rows where chartdate_start == chartdate_end
     df = df[df["chartdate_start"] != df["chartdate_end"]]
 
-    path_to_numerics_signal_duration = 'data\mimic3wdb-matched_numerics_signals_duration.csv'
+    path_to_numerics_signal_duration = 'data/mimic3wdb-matched_numerics_signals_duration.csv'
     numerics_signal_duration = pd.read_csv(path_to_numerics_signal_duration)
     numerics_signal_duration = numerics_signal_duration[numerics_signal_duration['record_id'].isin(df['record_id'])]
     numerics_signal_duration = numerics_signal_duration.drop_duplicates(subset=['record_id'], keep='first')
@@ -131,6 +131,7 @@ def transform_csv_to_csv_with_start_and_end(df):
     ).dt.total_seconds().clip(lower=0)
 
 
+
     merged_df["offset_end_seconds"] = (
         merged_df["offset_start_seconds"] + merged_df["medication_duration_seconds"]
     )
@@ -158,8 +159,10 @@ def transform_csv_to_csv_with_start_and_end(df):
 
 # load valid records
 valid_records = []
-with open('data/hinrichs_dataset/valid_records_hinrichs_base_model.json', 'r') as f:
-    valid_records = json.load(f)
+#with open('data/new_dataset/valid_records_spo2.json', 'r') as f:
+#    valid_records = json.load(f)
+with open('data/new_dataset/valid_records_hinrichs_base_model_abp.json', 'r') as f:
+    valid_records += json.load(f)
 
 valid_subjects = [s['subject'] for s in valid_records]
 valid_subjects = list(set(valid_subjects))
@@ -196,12 +199,12 @@ valid_records_without_vasopressors = [record for record in valid_records if reco
 print("Statistics on valid records without vasopressors:")
 mweh.print_statistics_of_waveform_records(valid_records_without_vasopressors, cur)
 
-#with open('data/hinrichs_dataset/records_without_vasopressors_surgery_during_stay.txt', 'w') as f:
-#    for record in valid_records_without_vasopressors:
-#        f.write(f"{record["record_id"]}\n")
+with open('data/new_dataset/records_without_vasopressors_surgery_during_stay.txt', 'w') as f:
+    for record in valid_records_without_vasopressors:
+        f.write(f"{record["record_id"]}\n")
 
-#mweh.transtlate_txt_to_csv_with_start_and_end('./data/hinrichs_dataset/records_without_vasopressors_surgery_during_stay.txt',
-#                                             './data/hinrichs_dataset/records_with_start_endtime/no_vasopressors.csv')
+mweh.transtlate_txt_to_csv_with_start_and_end('./data/new_dataset/records_without_vasopressors_surgery_during_stay.txt',
+                                             './data/new_dataset/records_with_start_endtime/no_vasopressors.csv')
 
 
 ############ get start and end time of continuous medication administration #########################################
@@ -219,4 +222,4 @@ medication_start_end_df = calculate_start_end_time_medication_administrations(df
 
 final_medication_df = transform_csv_to_csv_with_start_and_end(medication_start_end_df)
 
-final_medication_df.to_csv('./data/hinrichs_dataset/records_with_start_endtime/vasopressors.csv', index=False)
+final_medication_df.to_csv('./data/new_dataset/records_with_start_endtime/vasopressors.csv', index=False)

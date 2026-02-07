@@ -897,11 +897,16 @@ def transtlate_txt_to_csv_with_start_and_end(path_to_txt, output_csv_path):
             records.append(line.strip())
 
     no_ventilation_df = pd.DataFrame(records, columns=["record"])
-    no_ventilation_df["offset_start_seconds"] = 0
 
+    # move start of recordinng to start at 5 minute intervals starting at 2.5 or 7.5
+    parts = no_ventilation_df["record"].str.split("-")
+    start_str = (
+        parts.str[1] + "-" + parts.str[2] + "-" + parts.str[3] + " " +
+        parts.str[4] + ":" + parts.str[5].str.replace("n", "", regex=False)
+    )
+    no_ventilation_df["starttime"] = pd.to_datetime(start_str, format="%Y-%m-%d %H:%M")
 
-
-    path_to_numrics_signal_duration = 'data\mimic3wdb-matched_numerics_signals_duration.csv'
+    path_to_numrics_signal_duration = 'data\\mimic3wdb-matched_numerics_signals_duration.csv'
     numerics_signal_duration = pd.read_csv(path_to_numrics_signal_duration)
     filtered_by_record = numerics_signal_duration[numerics_signal_duration['record_id'].isin(no_ventilation_df['record'])]
     # only keep first entry per record_id
@@ -912,7 +917,8 @@ def transtlate_txt_to_csv_with_start_and_end(path_to_txt, output_csv_path):
     # concat with no_ventilation_df on record / record_id
     combined_df = pd.merge(no_ventilation_df, record_duration_df, left_on='record', right_on='record_id', how='left')
     combined_df["offset_end_seconds"] = combined_df["duration_seconds"]
-    combined_df.drop(columns=['record_id', 'duration_seconds'], inplace=True)
+    combined_df["offset_start_seconds"] = 0
+    combined_df.drop(columns=['record_id', 'duration_seconds', 'starttime'], inplace=True)
 
     combined_df.to_csv(output_csv_path, index=False)
 
